@@ -1,0 +1,180 @@
+<b>Chess Tournament</b>
+<b>time limit per test: 2 seconds</b>
+<b>memory limit per test: 256 megabytes</b>
+
+A chess tournament will be held soon, where n chess players will take part. Every participant will play one game against every other participant. Each game ends in either a win for one player and a loss for another player, or a draw for both players.
+
+Each of the players has their own expectations about the tournament, they can be one of two types:
+
+\( \quad \) 1. a player wants not to lose any game (i. e. finish the tournament with zero losses);
+\( \quad \) 2. a player wants to win at least one game.
+
+You have to determine if there exists an outcome for all the matches such that all the players meet their expectations. If there are several possible outcomes, print any of them. If there are none, report that it's impossible.
+
+<b>Input</b>
+
+The first line contains a single integer t (1≤t≤200) — the number of test cases.
+
+The first line of each test case contains one integer n (2≤n≤50) — the number of chess players.
+
+The second line contains the string s (|s|=n; \(s_i\)∈{1,2}). If \(s_i\)=1, then the i-th player has expectations of the first type, otherwise of the second type.
+
+<b>Output</b>
+
+For each test case, print the answer in the following format:
+
+In the first line, print NO if it is impossible to meet the expectations of all players.
+
+Otherwise, print YES, and the matrix of size n×n in the next n lines.
+
+The matrix element in the i-th row and j-th column should be equal to:
+
+\(\quad \bullet \) +, if the i-th player won in a game against the j-th player;
+\(\quad \bullet \) -, if the i-th player lost in a game against the j-th player;
+\(\quad \bullet \) =, if the i-th and j-th players' game resulted in a draw;
+\(\quad \bullet \) X, if i=j.
+
+
+
+
+The naive solution is to try all the valid grid combinations and check if any of them satisfy the required conditions, but since the number of combinations is too many, this solution would not be feasible.
+
+
+
+
+We are given a string of length n, where each character represents the expectation of a player in a chess tournament. We need to determine if it is possible to meet the expectations of all players. If it is possible, we need to print the outcome of all matches in the form of a matrix.
+
+The first step is to count the number of players with expectation 1 and 2. If there are more than one players with expectation 2, we can arrange them in a circle such that each player wins against the next player in the circle, and loses against the previous player. This way, all players with expectation 2 will win at least one game.
+
+However, if there is only one player with expectation 2, it is not possible to meet the expectations of all players, because this player cannot win against any other player.
+
+If there are no players with expectation 2, it is always possible to meet the expectations of all players by arranging all games as draws.
+
+Let's start by writing a boilerplate code to read the input and iterate over test cases. We will also initialize the necessary variables to store the count of players with expectation 1 and 2.
+
+
+
+
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int t;
+    cin >> t;
+    while (t--) {
+        int n;
+        cin >> n;
+        string s;
+        cin >> s;
+        int cnt1 = 0, cnt2 = 0;
+        for (char c : s) {
+            if (c == '1') cnt1++;
+            else cnt2++;
+        }
+    }
+    return 0;
+}
+
+
+
+
+Next, we need to handle the case where there are more than one players with expectation 2. In this case, we can arrange them in a circle such that each player wins against the next player in the circle, and loses against the previous player.
+
+We can use a vector to store the indices of the players with expectation 2. Then, we can iterate over the vector and set the corresponding elements in the matrix to '+' and '-'.
+
+However, we also need to handle the case where there are no players with expectation 2. In this case, we can simply set all elements in the matrix to '='.
+
+We also need to handle the case where there is only one player with expectation 2. In this case, we should print "NO" because it is not possible to meet the expectations of all players.
+
+Let's think about how we can implement these logic in code. We will need to use a vector to store the indices of the players with expectation 2, and a 2D vector to store the matrix.
+
+We will also need to use a boolean variable to track whether it is possible to meet the expectations of all players.
+
+After we have implemented these logic, we can start testing our code with some sample inputs to make sure it is working correctly.
+
+
+
+
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int t;
+    cin >> t;
+    while (t--) {
+        int n;
+        cin >> n;
+        string s;
+        cin >> s;
+        vector<int> idx2;
+        for (int i = 0; i < n; i++) {
+            if (s[i] == '2') idx2.push_back(i);
+        }
+        if (idx2.size() == 1) {
+            cout << "NO" << endl;
+            continue;
+        }
+        cout << "YES" << endl;
+        vector<vector<char>> mat(n, vector<char>(n, '='));
+        for (int i = 0; i < n; i++) mat[i][i] = 'X';
+        for (int i = 0; i < idx2.size(); i++) {
+            int j = (i + 1) % idx2.size();
+            mat[idx2[i]][idx2[j]] = '+';
+            mat[idx2[j]][idx2[i]] = '-';
+        }
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                cout << mat[i][j];
+            }
+            cout << endl;
+        }
+    }
+    return 0;
+}
+
+
+
+
+3
+3
+111
+2
+21
+4
+2122
+
+
+
+
+The sample test passed, since first and second tests have the same output and in the third test case, player 1, 3 ,4 have at least one win.
+
+Let's test the code against a test when all player want to have at least one win to see if the code handles all the cases.
+
+For example:
+\( n = 4 \)
+\( s = 2222 \)
+
+Any output that each player in it have at least one win is acceptable.
+
+
+
+
+
+Oh my bad looks like I forget to handle some case, when there is two players that needs at least one win, no cycle could be formed.
+
+
+
+
+3
+3
+111
+2
+21
+4
+2122
